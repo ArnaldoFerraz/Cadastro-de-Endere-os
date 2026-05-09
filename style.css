@@ -1,0 +1,88 @@
+*{
+    margin: o;
+    padding: 0;
+    boxsizing: borderbox;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f2f5f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container{
+    background: white;
+    width: 90%;
+    max-width: 450px;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+h1{
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+input{
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+input:focus{
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0,123,255,0.3);
+}
+
+.botoes{
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+}
+
+button{
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 120px;
+}
+
+.cadastrar{
+    background: #21a745;
+}
+
+.cadastrar:hover{
+    background: #218838;
+}
+
+.editar{
+    background: #ffc107;
+    color: #black;
+}
+
+.editar:hover{
+    background: #e0a800;
+}
+
+.excluir{
+    background: #dc3545;
+}
+
+.excluir:hover{
+    background: #c82333;
+}
