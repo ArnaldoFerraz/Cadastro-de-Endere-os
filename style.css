@@ -11,15 +11,18 @@ body{
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    flex-direction: column;
+    margin: 0;
 }
 
 .container{
     background: white;
     width: 90%;
     max-width: 450px;
-    padding: 25px;
+    padding: 75px;
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-top: 80px;
 }
 
 h1{
@@ -85,4 +88,68 @@ button{
 
 .excluir:hover{
     background: #c82333;
+}
+
+.menu{
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.menu a{
+    text-decoration: none;
+    padding: 10px 15px;
+    background: #007bff;
+    color: withe;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.3;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.menu a:hover{
+    background: #0056b3;
+}
+
+.procurar{
+    background: #21a745;
+}
+
+.procurar:hover{
+    background: #218838;
+}
+
+/*barra fixa no topo*/
+.topbar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #0007bff;
+    display: flex;
+    justify-content: center;
+    align-itens: center;
+    gap: 20px;
+    z-index: 1000;
+}
+
+/*links*/
+.topbar a{
+    color: withe;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.topbar a:hover{
+    background: 255, 255, 255, 0.2;
 }
