@@ -1,38 +1,73 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial scale 1.0">
-        <link rel="stylesheet" href="style.css">
 
-        <title>Endereços</title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <body>
+    <title>RotaCliente</title>
 
-        <nav class="menu">
-            <a href="index.html">Cadastro</a>
-            <a href="pesquisa.html">Procurar Endereço</a>
-        </nav>
+    <link rel="stylesheet" href="style.css">
 
-        <div class="container">
-            <header>
-                <h1>Endereços Cadastrados</h1>
-            </header>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
 
-            <main>
-                <form action="#" method="post">
-                    <label for="nome">Nome:</label>
-                    <input type="text" id="nome" name="nome" required>
+</head>
 
-                    <label for="endereco">Endereço:</label>
-                    <input type="text" id="endereco" name="endereco" required>
+<body>
 
-                    <div class="botoes">
-                        <button type="submit" class="procurar">Procurar</button>
-                    </div>
-                </form>
-            </main>
+<header class="topbar">
+
+    <div class="logo">
+        📍 Rota<span>Cliente</span>
+    </div>
+
+    <nav class="menu">
+        <a href="index.html">Cadastro</a>
+        <a href="pesquisa.html">Pesquisar</a>
+    </nav>
+
+</header>
+
+<main class="container">
+
+    <!-- SLOGAN -->
+    <p class="slogan">
+        RotaCliente — Seus endereços de entrega sempre salvos.
+    </p>
+
+    <section class="card">
+
+        <h1>Pesquisar Endereços</h1>
+
+        <form id="formPesquisa">
+
+            <div class="campo">
+                <label>Nome ou endereço</label>
+                <input type="text" id="pesquisa" required>
+            </div>
+
+            <button class="btn-salvar" type="submit">
+                Pesquisar
+            </button>
+
+        </form>
+
+    </section>
+
+    <section class="lista">
+
+        <h2>Resultados</h2>
+
+        <div id="resultadoPesquisa">
+            <p class="vazio">Digite para buscar</p>
         </div>
-    </body>
+
+    </section>
+
+</main>
+
+<script type="module" src="pesquisa.js"></script>
+
+</body>
 </html>

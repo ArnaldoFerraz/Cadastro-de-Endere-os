@@ -1,58 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
 
-  <title>Cadastro de Endereços</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RotaCliente</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+
 </head>
 
 <body>
 
-  <header class="topbar">
-    <a href="index.html">Cadastro</a>
-    <a href="pesquisa.html">Procurar Endereço</a>
-  </header>
+<header class="topbar">
 
+    <div class="logo">
+        📍 Rota<span>Cliente</span>
+    </div>
 
-  <div class="container">
+    <nav class="menu">
+        <a href="index.html">Cadastro</a>
+        <a href="pesquisa.html">Pesquisar</a>
+    </nav>
 
-    <header>
-      <h1>Cadastro de Endereços</h1>
-    </header>
+</header>
 
-    <main>
-      <form action="#" method="post">
+<main class="container">
 
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required>
+    <!-- SLOGAN -->
+    <p class="slogan">
+        RotaCliente — Seus endereços de entrega sempre salvos.
+    </p>
 
-        <label for="endereco">Endereço:</label>
-        <input type="text" id="endereco" name="endereco" required>
+    <section class="card">
 
-        <div class="botoes">
-          <button type="submit" class="cadastrar">
-            Cadastrar
-          </button>
+        <h1>Cadastro de Endereços</h1>
 
-          <button type="button" class="editar">
-            Editar
-          </button>
+        <form id="formCadastro">
 
-          <button type="button" class="excluir">
-            Excluir
-          </button>
+            <div class="campo">
+                <label>Nome</label>
+                <input type="text" id="nome" required>
+            </div>
+
+            <div class="campo">
+                <label>Endereço</label>
+                <input type="text" id="endereco" required>
+            </div>
+
+            <button class="btn-salvar" type="submit">
+                Salvar Cliente
+            </button>
+
+        </form>
+
+    </section>
+
+    <section class="lista">
+
+        <h2>Clientes cadastrados</h2>
+
+        <div id="listaClientes">
+            <p class="vazio">Nenhum endereço cadastrado.</p>
         </div>
 
-        <div id="listaClientes"></div>
+    </section>
 
-      </form>
-    </main>
+</main>
 
-  </div>
-
-  <script src="script.js"></script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
