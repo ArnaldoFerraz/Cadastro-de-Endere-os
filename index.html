@@ -2,57 +2,138 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>RotaCliente</title>
 
-    <link rel="stylesheet" href="style.css">
+    <!-- CSS -->
 
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2563eb">
+    <link rel="stylesheet"
+          href="style.css">
+
+    <!-- PWA -->
+
+    <link rel="manifest"
+          href="manifest.json">
+
+    <meta name="theme-color"
+          content="#0f172a">
 
 </head>
 
 <body>
 
+<!-- TOPO -->
+
 <header class="topbar">
 
+    <!-- LOGO -->
+
     <div class="logo">
-        📍 Rota<span>Cliente</span>
+        Rota<span>Cliente</span>
     </div>
 
+    <!-- MENU -->
+
     <nav class="menu">
-        <a href="index.html">Cadastro</a>
-        <a href="pesquisa.html">Pesquisar</a>
+
+        <a href="index.html">
+            Cadastro
+        </a>
+
+        <a href="pesquisa.html">
+            Pesquisar
+        </a>
+
+        <a href="painel.html"
+           id="adminLink"
+           style="display:none;">
+            Painel
+        </a>
+
+        <a href="#"
+           id="logoutBtn">
+            Sair
+        </a>
+
     </nav>
 
 </header>
 
+<!-- CONTEÚDO -->
+
 <main class="container">
 
-    <!-- SLOGAN -->
-    <p class="slogan">
-        RotaCliente — Seus endereços de entrega sempre salvos.
-    </p>
+    <!-- HEADER -->
+
+    <section class="welcome-card">
+
+        <div>
+
+            <h1>
+                Cadastro de Endereços
+            </h1>
+
+            <p class="slogan">
+                Sistema inteligente para motoristas.
+            </p>
+
+        </div>
+
+        <p id="usuarioLogado"></p>
+
+    </section>
+
+    <!-- CARD -->
 
     <section class="card">
 
-        <h1>Cadastro de Endereços</h1>
-
         <form id="formCadastro">
 
-            <div class="campo">
-                <label>Nome</label>
-                <input type="text" id="nome" required>
-            </div>
+            <!-- NOME -->
 
             <div class="campo">
-                <label>Endereço</label>
-                <input type="text" id="endereco" required>
+
+                <label>
+                    Nome
+                </label>
+
+                <input
+                    type="text"
+                    id="nome"
+                    placeholder="Digite o nome"
+                    required
+                >
+
             </div>
 
-            <button class="btn-salvar" type="submit">
+            <!-- ENDEREÇO -->
+
+            <div class="campo">
+
+                <label>
+                    Endereço
+                </label>
+
+                <input
+                    type="text"
+                    id="endereco"
+                    placeholder="Digite o endereço"
+                    required
+                >
+
+            </div>
+
+            <!-- BOTÃO -->
+
+            <button
+                class="btn-salvar"
+                type="submit"
+            >
                 Salvar Cliente
             </button>
 
@@ -60,17 +141,21 @@
 
     </section>
 
+    <!-- CLIENTES -->
+
     <section class="lista">
 
-        <h2>Clientes cadastrados</h2>
-
         <div id="listaClientes">
-            <p class="vazio">Nenhum endereço cadastrado.</p>
+            <p class="vazio">
+                🔎 Pesquise um endereço pra ter acesso a localização
+            </p>
         </div>
 
     </section>
 
 </main>
+
+<!-- JS -->
 
 <script type="module" src="script.js"></script>
 

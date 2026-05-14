@@ -1,182 +1,472 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+// script.js
+
+import { db, auth } from "./firebase.js";
 
 import {
-    getFirestore,
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+import {
     collection,
     addDoc,
-    getDocs,
     deleteDoc,
     doc,
-    updateDoc
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-/* FIREBASE CONFIG */
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDuzHhnGNZDfjdJlfQMlqU76FY4Xp8ZnQE",
-    authDomain: "enderecos-ea50e.firebaseapp.com",
-    projectId: "enderecos-ea50e",
-    storageBucket: "enderecos-ea50e.firebasestorage.app",
-    messagingSenderId: "530757930448",
-    appId: "1:530757930448:web:4a032f48c32291bbdf3dd5",
-    measurementId: "G-6DNTTZED64"
-};
-
-/* INIT */
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    updateDoc,
+    getDoc,
+    onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 /* ELEMENTOS */
 
-const form = document.getElementById("formCadastro");
-const lista = document.getElementById("listaClientes");
+const form =
+    document.getElementById("formCadastro");
+
+const lista =
+    document.getElementById("listaClientes");
+
+const usuarioLogado =
+    document.getElementById("usuarioLogado");
+
+const adminLink =
+    document.getElementById("adminLink");
+
+const logoutBtn =
+    document.getElementById("logoutBtn");
+
+/* CONTROLE */
 
 let editId = null;
 
-/* LISTAR */
+/* VERIFICA LOGIN */
 
-async function carregar() {
-
-    lista.innerHTML = "<p>Carregando...</p>";
+onAuthStateChanged(auth, async (user) => {
 
     try {
 
-        const snap = await getDocs(collection(db, "locais"));
+        if (!user) {
 
-        lista.innerHTML = "";
+            window.location.href =
+                "login.html";
 
-        if (snap.empty) {
-            lista.innerHTML = `<p class="vazio">Nenhum endereço cadastrado.</p>`;
             return;
         }
 
-        snap.forEach((docItem) => {
+        const usuarioRef =
+            doc(db, "usuarios", user.uid);
 
-            const c = docItem.data();
+        const usuarioSnap =
+            await getDoc(usuarioRef);
 
-            const nome = (c.nome || "").replace(/'/g, "\\'");
-            const endereco = (c.endereco || "").replace(/'/g, "\\'");
+        if (!usuarioSnap.exists()) {
 
-            lista.innerHTML += `
-                <div class="cliente">
+            await signOut(auth);
 
-                    <h3>${c.nome || "Sem nome"}</h3>
-                    <p>${c.endereco || "Sem endereço"}</p>
+            window.location.href =
+                "login.html";
 
-                    <div class="acoes">
+            return;
+        }
 
-                        <button onclick="editar('${docItem.id}', '${nome}', '${endereco}')">
-                            Editar
-                        </button>
+        const dados =
+            usuarioSnap.data();
 
-                        <button onclick="excluir('${docItem.id}')">
-                            Excluir
-                        </button>
+        /* STATUS */
 
-                        <button onclick="mapa(${c.latitude ?? 0}, ${c.longitude ?? 0})">
-                            Mapa
-                        </button>
+        if (dados.status !== "ativo") {
 
-                    </div>
+            alert(
+                "Conta aguardando aprovação."
+            );
 
-                </div>
-            `;
-        });
+            await signOut(auth);
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+        /* NOME */
+
+        usuarioLogado.textContent =
+            `👤 ${dados.nome || "Usuário"}`;
+
+        /* ADMIN */
+
+        if (dados.tipo === "admin") {
+
+            adminLink.style.display =
+                "inline-block";
+        }
+
+        /* CARREGAR DADOS */
+
+        carregarRealtime();
 
     } catch (erro) {
 
         console.error(erro);
 
-        lista.innerHTML = `<p>Erro ao carregar Firebase.</p>`;
+        alert("Erro ao verificar login.");
+
+        window.location.href =
+            "login.html";
     }
+
+});
+
+/* LOGOUT */
+
+logoutBtn.addEventListener(
+    "click",
+
+    async () => {
+
+        try {
+
+            await signOut(auth);
+
+            window.location.href =
+                "login.html";
+
+        } catch (erro) {
+
+            console.error(erro);
+
+            alert("Erro ao sair.");
+        }
+    }
+);
+
+/* REALTIME FIRESTORE */
+
+function carregarRealtime() {
+
+    lista.innerHTML =
+        "<p>Carregando...</p>";
+
+    onSnapshot(
+
+        collection(db, "locais"),
+
+        (snapshot) => {
+
+            lista.innerHTML = "";
+
+            if (snapshot.empty) {
+
+                lista.innerHTML = `
+                    <p class="vazio">
+                        Nenhum endereço cadastrado.
+                    </p>
+                `;
+
+                return;
+            }
+
+            snapshot.forEach((docItem) => {
+
+                criarCliente(docItem);
+
+            });
+
+        },
+
+        (erro) => {
+
+            console.error(erro);
+
+            lista.innerHTML = `
+                <p>
+                    Erro ao carregar dados.
+                </p>
+            `;
+        }
+    );
+}
+
+/* CRIAR CLIENTE */
+
+function criarCliente(docItem) {
+
+    const c =
+        docItem.data();
+
+    const div =
+        document.createElement("div");
+
+    div.className =
+        "cliente";
+
+    /* NOME */
+
+    const h3 =
+        document.createElement("h3");
+
+    h3.textContent =
+        c.nome || "Sem nome";
+
+    /* ENDEREÇO */
+
+    const p =
+        document.createElement("p");
+
+    p.textContent =
+        c.endereco || "Sem endereço";
+
+    /* AÇÕES */
+
+    const acoes =
+        document.createElement("div");
+
+    acoes.className =
+        "acoes";
+
+    /* EDITAR */
+
+    const btnEditar =
+        document.createElement("button");
+
+    btnEditar.textContent =
+        "Editar";
+
+    btnEditar.addEventListener(
+        "click",
+
+        () => editar(
+            docItem.id,
+            c.nome,
+            c.endereco
+        )
+    );
+
+    /* EXCLUIR */
+
+    const btnExcluir =
+        document.createElement("button");
+
+    btnExcluir.textContent =
+        "Excluir";
+
+    btnExcluir.style.background =
+        "#ef4444";
+
+    btnExcluir.addEventListener(
+        "click",
+
+        () => excluir(docItem.id)
+    );
+
+    /* MAPA */
+
+    const btnMapa =
+        document.createElement("button");
+
+    btnMapa.textContent =
+        "Mapa";
+
+    btnMapa.addEventListener(
+        "click",
+
+        () => mapa(
+            c.latitude,
+            c.longitude
+        )
+    );
+
+    /* APPEND */
+
+    acoes.append(
+        btnEditar,
+        btnExcluir,
+        btnMapa
+    );
+
+    div.append(
+        h3,
+        p,
+        acoes
+    );
+
+    lista.appendChild(div);
 }
 
 /* CADASTRAR / EDITAR */
 
-form.addEventListener("submit", async (e) => {
+form.addEventListener(
 
-    e.preventDefault();
+    "submit",
 
-    const nome = document.getElementById("nome").value.trim();
-    const endereco = document.getElementById("endereco").value.trim();
+    async (e) => {
 
-    if (!nome || !endereco) {
-        alert("Preencha todos os campos.");
-        return;
-    }
+        e.preventDefault();
 
-    if (!navigator.geolocation) {
-        alert("Geolocalização não suportada.");
-        return;
-    }
+        const nome =
+            document.getElementById("nome")
+            .value
+            .trim();
 
-    navigator.geolocation.getCurrentPosition(
-        async (pos) => {
+        const endereco =
+            document.getElementById("endereco")
+            .value
+            .trim();
 
-            try {
+        if (!nome || !endereco) {
 
-                const data = {
-                    nome,
-                    endereco,
-                    latitude: pos.coords.latitude,
-                    longitude: pos.coords.longitude
-                };
+            alert(
+                "Preencha todos os campos."
+            );
 
-                if (editId) {
+            return;
+        }
 
-                    await updateDoc(doc(db, "locais", editId), data);
-                    editId = null;
+        if (!navigator.geolocation) {
 
-                } else {
+            alert(
+                "Geolocalização não suportada."
+            );
 
-                    await addDoc(collection(db, "locais"), data);
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+
+            async (pos) => {
+
+                try {
+
+                    const data = {
+
+                        nome,
+                        endereco,
+
+                        latitude:
+                            pos.coords.latitude,
+
+                        longitude:
+                            pos.coords.longitude,
+
+                        atualizadoEm:
+                            new Date()
+                    };
+
+                    /* EDITAR */
+
+                    if (editId) {
+
+                        await updateDoc(
+
+                            doc(
+                                db,
+                                "locais",
+                                editId
+                            ),
+
+                            data
+                        );
+
+                        editId = null;
+
+                    }
+
+                    /* NOVO */
+
+                    else {
+
+                        data.criadoEm =
+                            new Date();
+
+                        await addDoc(
+
+                            collection(
+                                db,
+                                "locais"
+                            ),
+
+                            data
+                        );
+                    }
+
+                    form.reset();
+
+                } catch (erro) {
+
+                    console.error(erro);
+
+                    alert(
+                        "Erro ao salvar."
+                    );
                 }
 
-                form.reset();
-                carregar();
+            },
 
-            } catch (erro) {
+            (erro) => {
+
                 console.error(erro);
-                alert("Erro ao salvar no Firebase.");
-            }
 
-        },
-        (erro) => {
-            console.error(erro);
-            alert("Permita acesso à localização.");
-        }
-    );
-});
+                alert(
+                    "Permita acesso à localização."
+                );
+            }
+        );
+    }
+);
 
 /* EXCLUIR */
 
 window.excluir = async (id) => {
 
-    if (!confirm("Deseja excluir este endereço?")) return;
+    const confirmar =
+        confirm(
+            "Deseja excluir?"
+        );
+
+    if (!confirmar) return;
 
     try {
 
-        await deleteDoc(doc(db, "locais", id));
-        carregar();
+        await deleteDoc(
+
+            doc(
+                db,
+                "locais",
+                id
+            )
+        );
 
     } catch (erro) {
+
         console.error(erro);
-        alert("Erro ao excluir.");
+
+        alert(
+            "Erro ao excluir."
+        );
     }
 };
 
 /* EDITAR */
 
-window.editar = (id, nome, endereco) => {
+window.editar = (
 
-    document.getElementById("nome").value = nome;
-    document.getElementById("endereco").value = endereco;
+    id,
+    nome,
+    endereco
+
+) => {
+
+    document.getElementById("nome")
+        .value = nome;
+
+    document.getElementById("endereco")
+        .value = endereco;
 
     editId = id;
 
     window.scrollTo({
+
         top: 0,
+
         behavior: "smooth"
     });
 };
@@ -186,7 +476,11 @@ window.editar = (id, nome, endereco) => {
 window.mapa = (lat, lng) => {
 
     if (!lat || !lng) {
-        alert("Localização não disponível.");
+
+        alert(
+            "Localização não disponível."
+        );
+
         return;
     }
 
@@ -195,7 +489,3 @@ window.mapa = (lat, lng) => {
         "_blank"
     );
 };
-
-/* INICIAR */
-
-carregar();
